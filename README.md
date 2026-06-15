@@ -12,5 +12,5 @@ Outputs can be found in the `build` folder
 All STLs are under [CC-BY-NC-SA](https://creativecommons.org/licenses/by-nc-sa/4.0/)  
 _This is in accordance with the original licensing from SevenUnited on Thingiverse_
 
-All scripts are under MIT  
+All scripts are under [MIT](https://opensource.org/license/mit)  
 _Note that the output of the script (ie the distributed STL) is under CC-BY-NC-SA_
