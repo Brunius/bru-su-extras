@@ -18,7 +18,7 @@ wallThickness = 2;
 
 // Definitions for pipeline end (for interface)
 // These are derived from SevenUnited designs as I have no access to original SM items
-interfaceOuterDiameter = 25;
+interfaceOuterDiameter = 26;
 interfaceOuterHeight = 2.5;
 interfaceInnerDiameter = 20;
 interfaceInnerHeight = 2;
