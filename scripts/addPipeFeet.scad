@@ -17,25 +17,77 @@ module newFoot() {
 }
 
 // Used for reference - not present in output
-%translate([-30.5/2+1-30.5, 0, 0]) import(str(pipes_2_folder, "T_305.stl"));
+%*translate([-30.5/2+1-30.5, 0, 0]) import(str(pipes_2_folder, "T_305.stl"));
 
-
-// Foot at 0/0
-*newFoot();
-
-
-union() {
-translate([30.5/2, 0, 0])
-	newFoot();
-translate([-30.5/2, 0, 0])
-	newFoot();
-
-// Add pipe item
-nameOfPipeFile = "61_T_V1.stl";
-lengthInUnits = 2; // This is in units of 30.5mm - so 2 == 61mm
-translate([30.5*(lengthInUnits-1), 0, 30.5/2-1]) 
-	rotate([0, -90, 0])
-	import(str(pipes_2_folder, nameOfPipeFile));
+module pipes2(filename, length = 1) {
+	addFeet(length)
+		translate([30.5*(length/2), 0, 30.5/2-1]) 
+		rotate([0, -90, 0])
+		import(str(pipes_2_folder, filename));
 }
 
-translate([0, 0, 30.5]) import(str(pipes_2_folder, "305_Straight.stl"));
+module addFeet(length = 1) {
+	for (i = [-(length-1)/2:(length-1)/2]) {
+		translate([i*30.5, 0, 0])
+			newFoot(); 
+	}
+
+	children();
+}
+
+module cutoutHollow(length = 1) {
+	difference() {
+		union() {
+			children();
+		}
+		translate([0, 0, 30.5/2-1]) 
+			rotate([0, 90, 0]) 
+			translate([0, 0, -(length-1)/2*30.5]) 
+			pipelineCentreCutout();
+		translate([0, 0, 30.5/2-1]) 
+			rotate([0, -90, 0]) 
+			translate([0, 0, -(length-1)/2*30.5]) {
+				pipelineCentreCutout();
+				cylinder(h=50000, d=interfaceMagnetDiameter2+tolerance*2, center=true);
+			}
+	}
+
+}
+
+*cutoutHollow(1)
+	addFeet(1)
+		translate([-303.15, 164.82, 1.25])
+		import(str(pipes_folder, "30.5_S.stl"));
+
+*cutoutHollow(2)
+	addFeet(2)
+		translate([-30.5/2-303.15, 375, 1.25])
+		import(str(pipes_folder, "61_S.stl"));
+
+*difference() {
+cutoutHollow(2)
+	addFeet(2)
+		translate([-30.5/2-303.15, 195.615, 1.25])
+		import(str(pipes_folder, "61_T1.stl"));
+	translate([0, 0, 30.5/2-1]) rotate([-90, 0, 0]) pipelineCentreCutout();
+}
+
+*cutoutHollow(3)
+	addFeet(3)
+		translate([-30.5/2-303.15-30.5/2, 375+30.25, 1.25])
+		import(str(pipes_folder, "91.5_S.stl"));
+
+*cutoutHollow(4)
+	addFeet(4)
+		translate([56, 458, 1.25])
+		import(str(pipes_folder, "ST1_clean_full.stl"));
+
+cutoutHollow(4)
+	addFeet(4)
+		translate([0, -1, 1])
+		translate([0, 0, 28.5/2])
+		import(str(pipes_folder, "ST3_full.stl"), center=true);
+
+
+*#translate([30.5*1.5, 0, 0])
+	pipes2("305_Straight.stl");
